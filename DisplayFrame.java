@@ -3,41 +3,59 @@ import javax.swing.border.Border;
 import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.image.BufferedImage;
-//import java.awt.GridBagConstraints;
-//import java.awt.GridBagLayout;
-
+import javax.swing.Icon;
 
 public class DisplayFrame extends JFrame implements ActionListener, KeyListener {
 	
 	// constant for total charges
 	private final double BILL_TOTAL = 24.99;
 	long cardNumber = 1L;
-	
 	String cardText;
 	String nameText;
+	private static String fourDigits;
+	
+	
+	private void setLastFour(long num) 
+	{
+		String str = num+"";
+		StringBuilder lastFour = new StringBuilder();
+		
+		for(int i = 0; i < str.length(); i ++)
+		{
+			if(i >= (str.length() - 4))
+			{
+				lastFour.append(str.charAt(i));
+			}
+		}
+		fourDigits = lastFour.toString();
+	}
+	
+	private static String getLastFour() 
+	{
+		return fourDigits;
+	}
 	
 	// panels
 	private JPanel panel= new JPanel();
 	private JPanel outerPanel = new JPanel();
 	private JPanel paymentWindow = new JPanel();
-		private JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		private JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		private JPanel cpRow1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		private JPanel cpRow2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		private JPanel cpRow3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		private JPanel cpRow4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		private JPanel cpLeft = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		private JPanel cpLeftTop = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		private JPanel cpLeftBottom = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		private JPanel cpRight = new JPanel(new FlowLayout(FlowLayout.LEFT));
-		private JPanel cpRightTop = new JPanel();
-		private JPanel cpRightBottom = new JPanel();
-		private JPanel bottomPanel = new JPanel();
-		private JPanel borderTop = new JPanel();
-		private JPanel borderLeft = new JPanel();
-		private JPanel borderRight = new JPanel();
-		private JPanel borderBottom = new JPanel();
+	private JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel cpRow1 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel cpRow2 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel cpRow3 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel cpRow4 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel cpLeft = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel cpLeftTop = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel cpLeftBottom = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel cpRight = new JPanel(new FlowLayout(FlowLayout.LEFT));
+	private JPanel cpRightTop = new JPanel();
+	private JPanel cpRightBottom = new JPanel();
+	private JPanel bottomPanel = new JPanel();
+	private JPanel borderTop = new JPanel();
+	private JPanel borderLeft = new JPanel();
+	private JPanel borderRight = new JPanel();
+	private JPanel borderBottom = new JPanel();
 	private JPanel confirmPanel = new JPanel();
 		JPanel topConfirmPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
 		JPanel midConfirmPanel = new JPanel(new GridLayout(3,1));
@@ -50,8 +68,11 @@ public class DisplayFrame extends JFrame implements ActionListener, KeyListener 
 	private ButtonGroup radioButtons = new ButtonGroup();
 	private JButton purchase = new JButton("Purchase");
 	
+	// icons 
+	Icon icon = new ImageIcon("D:/Adam/Documents/GitHub/Online-Checkout-GUI/Icons");
+	
 	// labels
-	private JLabel secureLabel = new JLabel("Don't worry, this small lock icon ensures your transaction is safe.");
+	private JLabel secureLabel = new JLabel(" Don't worry, this small lock icon ensures your transaction is safe.");
 	private JLabel cardNumLabel = new JLabel("Card Number (13-16 digits)");
 	private JLabel expLabel = new JLabel("Expiration Date");
 	private JLabel cvvLabel = new JLabel("CVV2/CVC2");
@@ -59,7 +80,7 @@ public class DisplayFrame extends JFrame implements ActionListener, KeyListener 
 	private JLabel billingLabel = new JLabel("You will be charged $" + BILL_TOTAL + ".");
 	private JLabel slash = new JLabel("/");
 	private JLabel thankYou = new JLabel("Thank You!");
-	private JLabel confirmText = new JLabel("Your Order has been placed:");
+	private JLabel confirmText = new JLabel("Your Order has been placed!");
 	private JLabel name = new JLabel();
 	private JLabel cardNum = new JLabel();
 
@@ -80,16 +101,16 @@ public class DisplayFrame extends JFrame implements ActionListener, KeyListener 
 	private Border border2 = new LineBorder(Color.BLACK, 1, true);
 	
 	// Images and icons
-	ImageIcon lock = new ImageIcon("/Users//Adam//Desktop/icons/lock.png");
+	ImageIcon lock = new ImageIcon("D:/Adam/Documents/GitHub/Online-Checkout-GUI/Icons/lock.png");
 	JLabel lockLabel = new JLabel();
 	
-	ImageIcon masterCard = new ImageIcon("/Users//Adam//Desktop/icons/creditcards/mastercard.png");
+	ImageIcon masterCard = new ImageIcon("D:/Adam/Documents/GitHub/Online-Checkout-GUI/Icons/mastercard.png");
 	JLabel mcLabel = new JLabel();
 	
-	ImageIcon payPal = new ImageIcon("/Users//Adam/Desktop/icons/creditcards/paypa.png");
+	ImageIcon payPal = new ImageIcon("D:/Adam/Documents/GitHub/Online-Checkout-GUI/Icons/paypal.png");
 	JLabel ppLabel = new JLabel();
 	
-	ImageIcon visa = new ImageIcon("/Users/Adam/Desktop/icons/creditcards/visa.png");
+	ImageIcon visa = new ImageIcon("D:/Adam/Documents/GitHub/Online-Checkout-GUI/Icons/visa.png");
 	JLabel visaLabel = new JLabel();
 	
 	ImageIcon xIcon = new ImageIcon("/Users//Adam//Desktop/icons/x-button.png");
@@ -103,7 +124,10 @@ public class DisplayFrame extends JFrame implements ActionListener, KeyListener 
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
 		
-		Image lockImg = lock.getImage().getScaledInstance(20,20, java.awt.Image.SCALE_SMOOTH);
+//		Image lockImg = lock.getImage().getScaledInstance(20,20, java.awt.Image.SCALE_SMOOTH);
+//		iconLabel.setIcon(new ImageIcon(lockImg));
+//		
+		Image lockImg = lock.getImage().getScaledInstance(12,16, java.awt.Image.SCALE_SMOOTH);
 		lockLabel.setIcon(new ImageIcon(lockImg));
 		
 		Image visaImg = visa.getImage().getScaledInstance(50,30, java.awt.Image.SCALE_SMOOTH);
@@ -142,7 +166,7 @@ public class DisplayFrame extends JFrame implements ActionListener, KeyListener 
 	// PAYMENT WINDOW
 		
 		// payment window, top panel
-		topPanel.setPreferredSize(new Dimension(270, 50));
+		topPanel.setPreferredSize(new Dimension(270, 28));
 		topPanel.setBackground(new Color(102, 178, 255));
 		secureLabel.setFont(new Font("Arial", Font.BOLD, 12));
 		secureLabel.setForeground(Color.WHITE);
@@ -172,7 +196,7 @@ public class DisplayFrame extends JFrame implements ActionListener, KeyListener 
 				cpRow1.add(mcLabel);
 				cpRow1.add(ppButton);
 				cpRow1.add(ppLabel);
-			
+
 			// center panel, row 2
 			centerPanel.add(cpRow2);	
 			cpRow2.setBackground(Color.WHITE);
@@ -287,17 +311,15 @@ public class DisplayFrame extends JFrame implements ActionListener, KeyListener 
 			// parse credit card string input to a long type
 			cardNumber = Long.parseLong(cardText);
 			
-			CheckCardNum checkNum = new CheckCardNum();
-			
 			// variable to store return value from Luhn Algorithm
-			boolean valid = checkNum.isValid(cardNumber);
+			boolean valid = CheckCardNum.isValid(cardNumber);
 			
 			if(valid == true)
 			{
-
+				setLastFour(cardNumber);
 				JLabel billing = new JLabel("BILLING INFORMATION:");			
-				JLabel orderName = new JLabel("Name: Adam Gemperline" );
-				JLabel payment = new JLabel("Payment: Card ending in 1007" );
+				JLabel orderName = new JLabel("Name: " + nameText);
+				JLabel payment = new JLabel("Payment: Card ending in " + getLastFour());
 				
 				thankYou.setFont(new Font("Arial", Font.BOLD, 20));
 				billing.setFont(new Font("Arial", Font.BOLD, 20));
